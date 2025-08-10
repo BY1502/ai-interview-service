@@ -1,0 +1,37 @@
+<!doctype html>
+<meta charset="utf-8" />
+<div style="font-family:sans-serif;max-width:720px;margin:40px auto">
+  <h2>Realtime Feedback Test</h2>
+  <label>WebSocket URL</label>
+  <input id="url" style="width:100%" value="ws://127.0.0.1:8000/api/realtime/1" />
+  <label>question_id</label>
+  <input id="qid" type="number" value="1" />
+  <label>elapsed_sec</label>
+  <input id="sec" type="number" value="10" />
+  <label>text (누적 전사)</label>
+  <textarea id="txt" rows="6" style="width:100%">로그와 메트릭을 연결해 병목을 찾았고 성능을 최적화했습니다.</textarea>
+  <div style="margin:12px 0">
+    <button id="connect">Connect</button>
+    <button id="send">Send</button>
+  </div>
+  <pre id="log" style="background:#111;color:#0f0;padding:12px;min-height:200px"></pre>
+</div>
+<script>
+let ws;
+const log = (m) => { const el = document.getElementById('log'); el.textContent += m + "\n"; el.scrollTop = el.scrollHeight; }
+document.getElementById('connect').onclick = () => {
+  ws = new WebSocket(document.getElementById('url').value);
+  ws.onopen = () => log("[open]");
+  ws.onmessage = (ev) => log("[recv] " + ev.data);
+  ws.onclose = () => log("[close]");
+};
+document.getElementById('send').onclick = () => {
+  const msg = {
+    question_id: Number(document.getElementById('qid').value),
+    elapsed_sec: Number(document.getElementById('sec').value),
+    text: document.getElementById('txt').value
+  };
+  ws.send(JSON.stringify(msg));
+  log("[send] " + JSON.stringify(msg));
+};
+</script>

@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "ai-interview-service"
+version = "0.1.0"
+description = "Backend + AI toy project: AI interview question generation and feedback"
+authors = ["You <you@example.com>"]
+readme = "README.md"
+packages = [{ include = "app" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.111.0"
+uvicorn = {extras = ["standard"], version = "^0.30.0"}
+pydantic = "^2.8.0"
+pydantic-settings = "^2.3.0"
+sqlalchemy = "^2.0.30"
+alembic = "^1.13.0"
+python-multipart = "^0.0.9"
+httpx = "^0.27.0"
+faster-whisper = "^1.2.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.0"
+black = "^24.4.0"
+isort = "^5.13.0"
+mypy = "^1.10.0"
+types-requests = "^2.32.0.20240622"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+
+[build-system]
+requires = ["poetry-core>=1.8.0"]
+build-backend = "poetry.core.masonry.api"
