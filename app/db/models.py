@@ -2,6 +2,7 @@
 from sqlalchemy import String, Integer, DateTime, ForeignKey, Text, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
+from typing import Optional
 from app.db.base import Base
 
 class Session(Base):
@@ -12,6 +13,8 @@ class Session(Base):
     level: Mapped[str] = mapped_column(String(50))
     difficulty: Mapped[str] = mapped_column(String(20), default="medium")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    user_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id"), nullable=True)
+    company: Mapped[str] = mapped_column(String(255), default="")
 
     questions: Mapped[list["Question"]] = relationship(back_populates="session", cascade="all, delete-orphan")
 

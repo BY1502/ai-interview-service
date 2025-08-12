@@ -14,8 +14,8 @@ def verify_pw(p, h): return pwd.verify(p, h)
 
 def make_tokens(user_id: int):
     now = datetime.datetime.utcnow()
-    access = jwt.encode({"sub": user_id, "exp": now + datetime.timedelta(minutes=ACCESS_MIN)}, SECRET, algorithm=ALGO)
-    refresh = jwt.encode({"sub": user_id, "exp": now + datetime.timedelta(days=REFRESH_DAYS)}, SECRET, algorithm=ALGO)
+    access = jwt.encode({"sub": str(user_id), "exp": now + datetime.timedelta(minutes=ACCESS_MIN)}, SECRET, algorithm=ALGO)
+    refresh = jwt.encode({"sub": str(user_id), "exp": now + datetime.timedelta(days=REFRESH_DAYS)}, SECRET, algorithm=ALGO)
     return access, refresh
 
 def set_auth_cookies(resp: Response, access: str, refresh: str):
@@ -31,5 +31,6 @@ def current_user_id(request: Request) -> int | None:
     try:
         data = jwt.decode(tok, SECRET, algorithms=[ALGO])
         return int(data["sub"])
-    except Exception:
+    except Exception as e:
+        import logging; logging.getLogger("auth").exception("JWT decode failed: %s", e)
         return None

@@ -44,7 +44,9 @@ function useAuth(baseUrl) {
     let alive = true;
     (async () => {
       try {
-        const res = await fetch(`${baseUrl}/me`, { credentials: 'include' });
+        const res = await fetch(`${baseUrl}/api/me`, {
+          credentials: 'include',
+        });
         if (res.ok) {
           const u = await res.json();
           if (alive) setUser(u);
@@ -127,16 +129,16 @@ function Login({ baseUrl, setUser }) {
     e.preventDefault();
     setError('');
     try {
-      const res = await fetch(`${baseUrl}/auth/login`, {
+      const res = await fetch(`${baseUrl}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) throw new Error(await res.text());
-      const me = await fetch(`${baseUrl}/me`, { credentials: 'include' }).then(
-        (r) => r.json()
-      );
+      const me = await fetch(`${baseUrl}/api/me`, {
+        credentials: 'include',
+      }).then((r) => r.json());
       setUser(me);
       nav('/');
     } catch (e) {
@@ -186,7 +188,7 @@ function Signup({ baseUrl }) {
     e.preventDefault();
     setError('');
     try {
-      const res = await fetch(`${baseUrl}/auth/signup`, {
+      const res = await fetch(`${baseUrl}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -688,12 +690,12 @@ function MySessions({ baseUrl }) {
 export default function App() {
   const [baseUrl, setBaseUrl] = useLocalStorage(
     'aii.baseUrl',
-    'http://127.0.0.1:8000'
+    'http://localhost:8000'
   );
   const { user, setUser, loading } = useAuth(baseUrl);
 
   async function onLogout() {
-    await fetch(`${baseUrl}/auth/logout`, {
+    await fetch(`${baseUrl}/api/auth/logout`, {
       method: 'POST',
       credentials: 'include',
     });
